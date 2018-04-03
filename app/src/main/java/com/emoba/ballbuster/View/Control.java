@@ -9,13 +9,15 @@ import android.support.v4.content.ContextCompat;
 import com.emoba.ballbuster.R;
 
 public class Control {
-    private static int RADIUS_TOUCH = 20;
-    private static int RADIUS_GRID = 150;
-    private static int MARGIN_GRID = 80;
+    private int RADIUS_TOUCH = 20;
+    private int RADIUS_GRID = 150;
+    private int MARGIN_GRID = 80;
 
     private Context context;
     private Paint paint;
     private Point lastPosition;
+    private int x = 0;
+    private int y = 0;
 
     public Control(Context context){
         this.context = context;
@@ -23,10 +25,25 @@ public class Control {
         lastPosition = new Point(0,0);
     }
 
-    protected void drawPosition(Canvas canvas, Point nextPosition){
-        int x = (int) canvas.getWidth() / 2;
-        int y = (int) canvas.getHeight() / 2;
+    public Control(Context context, int width, int height){
+        this(context);
+        int size;
 
+        if(width > height){
+            size = height;
+        }else{
+            size = width;
+        }
+
+        RADIUS_GRID = size / 3;
+        MARGIN_GRID = (height - (2 * RADIUS_GRID)) / 3;
+        RADIUS_TOUCH = size / 20;
+
+        x = (int) width / 2;
+        y = (int) RADIUS_GRID + MARGIN_GRID;
+    }
+
+    protected void drawPosition(Canvas canvas, Point nextPosition){
         //Draw circles
         int color = ContextCompat.getColor(context, R.color.colorAccent);
         paint.setColor(color);
