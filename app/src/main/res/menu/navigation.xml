@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home_black_24dp"
-        android:title="@string/title_aim"
-        android:onClick="openAimView"/>
+        android:id="@+id/navigation_aim"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_menu_rotate"
+        android:title="@string/title_aim" />
 
     <item
-        android:id="@+id/navigation_dashboard"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/title_touch"
-        android:onClick="openTouchView"/>
+        android:id="@+id/navigation_touch"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_menu_myplaces"
+        android:title="@string/title_touch" />
 
     <item
-        android:id="@+id/navigation_notifications"
-        android:icon="@drawable/ic_notifications_black_24dp"
-        android:title="@string/title_sensor"
-        android:onClick="openSensorView"/>
+        android:id="@+id/navigation_sensor"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_menu_mylocation"
+        android:title="@string/title_sensor" />
 
 </menu>
