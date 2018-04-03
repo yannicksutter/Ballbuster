@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,7 +26,7 @@ import ch.fhnw.edu.emoba.spherolib.SpheroRobotProxy;
 public class PairingActivity extends AppCompatActivity implements SpheroRobotDiscoveryListener {
 
     TextView textView;
-
+    SpheroRobotProxy proxy;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,20 +35,39 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
         textView.setText("Discovering for Sphero Device...");
 
         boolean onEmulator = Build.PRODUCT.startsWith("sdk");
-        SpheroRobotProxy proxy = SpheroRobotFactory.createRobot(onEmulator);
+        proxy = SpheroRobotFactory.createRobot(onEmulator);
         proxy.setDiscoveryListener(this);
         proxy.startDiscovering(getApplicationContext());
-
-
-        //if connection successful
-        //Intent intent = new Intent(this, MainActivity.class);
-        //startActivity(intent);
-        //finish();
     }
 
 
     @Override
-    public void handleRobotChangedState(SpheroRobotBluetoothNotification spheroRobotBluetoothNotification) {
+    public void handleRobotChangedState(SpheroRobotBluetoothNotification notification) {
+        /*proxy.stopDiscovering();
 
+        if (notification == SpheroRobotBluetoothNotification.Online) {
+
+            Log.i("Sphero", "BlueTooth Connected. Starting Sheropanther...");
+
+            Intent intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+
+            ActivityCompat.finishAffinity(this);
+
+        } else {
+
+            Log.e("Sphero", "Connection failed.");
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //TODO
+                    //connectionFailedDialog();
+                }
+            });
+
+        }
+        */
     }
 }
