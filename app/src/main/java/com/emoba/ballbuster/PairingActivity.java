@@ -43,11 +43,11 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
 
     @Override
     public void handleRobotChangedState(SpheroRobotBluetoothNotification notification) {
-        /*proxy.stopDiscovering();
+        proxy.stopDiscovering();
 
         if (notification == SpheroRobotBluetoothNotification.Online) {
 
-            Log.i("Sphero", "BlueTooth Connected. Starting Sheropanther...");
+            Log.i("Sphero", "bluetooth connected");
 
             Intent intent = new Intent(this, MainActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -68,6 +68,6 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
             });
 
         }
-        */
+
     }
 }
