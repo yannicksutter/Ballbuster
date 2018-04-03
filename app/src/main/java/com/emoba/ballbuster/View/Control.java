@@ -44,6 +44,8 @@ public class Control {
     }
 
     protected void drawPosition(Canvas canvas, Point nextPosition){
+        drawMarker(canvas, x, y);
+
         //Draw circles
         int color = ContextCompat.getColor(context, R.color.colorAccent);
         paint.setColor(color);
@@ -64,7 +66,7 @@ public class Control {
             paint.setStrokeWidth(4);
             canvas.drawCircle(lastPosition.x, lastPosition.y, RADIUS_TOUCH+10, paint);
         } else {
-            paint.setStyle(Paint.Style.STROKE);
+            paint.setStyle(Paint.Style.FILL);
             canvas.drawCircle(x, y, RADIUS_TOUCH - 5, paint);
 
             paint.setStyle(Paint.Style.STROKE);
@@ -81,18 +83,17 @@ public class Control {
 
         int xStart = x - RADIUS_GRID;
         int xEnd = x + RADIUS_GRID;
-        int yStart = y;
-        int yEnd = y;
-        canvas.drawLine(xStart,yStart,xEnd,yEnd, paint);
+        canvas.drawLine(xStart,y,xEnd,y, paint);
 
         xStart = x;
-        yStart = y -RADIUS_GRID;
-        xEnd = x;
-        yEnd = y + RADIUS_GRID;
-        canvas.drawLine(xStart, yStart, xEnd, yEnd, paint);
+        int yStart = y -RADIUS_GRID;
+        int yEnd = y + RADIUS_GRID;
+        canvas.drawLine(x, yStart, x , yEnd, paint);
 
-        color = ContextCompat.getColor(context, R.color.colorLine);
+        color = ContextCompat.getColor(context, R.color.colorPrimaryDark);
         paint.setColor(color);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(6);
         canvas.drawCircle(x, y, RADIUS_GRID, paint);
 
     }

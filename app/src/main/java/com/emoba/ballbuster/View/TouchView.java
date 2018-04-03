@@ -22,7 +22,7 @@ public class TouchView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
 
         if(w > 0 && h > 0){
-            controller = new Control(getContext());
+            controller = new Control(getContext(), w, h);
         }
     }
 
