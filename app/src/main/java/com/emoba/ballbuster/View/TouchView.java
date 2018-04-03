@@ -2,18 +2,27 @@ package com.emoba.ballbuster.View;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.support.annotation.Nullable;
-import android.util.AttributeSet;
+import android.graphics.Point;
+import android.os.Handler;
 import android.view.View;
 
 public class TouchView extends View {
 
-    public TouchView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+    private Control controller;
+    private Point nextPosition;
+
+    private Handler robotControlHandler;
+
+    public TouchView(Context context) {
+        super(context);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        if(controller != null){
+            controller.drawPosition(canvas, nextPosition);
+        }
     }
 }

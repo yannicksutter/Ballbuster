@@ -1,12 +1,14 @@
 package com.emoba.ballbuster;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+
+import com.emoba.ballbuster.View.TouchView;
 
 
 /**
@@ -26,6 +28,9 @@ public class TouchFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    //Add View
+    private TouchView touchView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -67,7 +72,13 @@ public class TouchFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction("Touch");
         }
-        return inflater.inflate(R.layout.fragment_touch, container, false);
+        View view = inflater.inflate(R.layout.fragment_touch, container, false);
+
+        RelativeLayout controllerLayout = (RelativeLayout) view.findViewById(R.id.touchControlLayout);
+        touchView = new TouchView(getActivity());
+        controllerLayout.addView(touchView);
+
+        return view;
     }
 
 
