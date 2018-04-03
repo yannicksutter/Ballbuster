@@ -2,19 +2,19 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/navigation_aim"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="@string/title_aim"
         android:onClick="openAimView"/>
 
     <item
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_touch"
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="@string/title_touch"
         android:onClick="openTouchView"/>
 
     <item
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_sensors"
         android:icon="@drawable/ic_notifications_black_24dp"
         android:title="@string/title_sensor"
         android:onClick="openSensorView"/>

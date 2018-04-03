@@ -22,13 +22,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.navigation_home:
+                case R.id.navigation_aim:
                     mTextMessage.setText(R.string.title_aim);
                     return true;
-                case R.id.navigation_dashboard:
+                case R.id.navigation_touch:
                     mTextMessage.setText(R.string.title_touch);
                     return true;
-                case R.id.navigation_notifications:
+                case R.id.navigation_sensors:
                     mTextMessage.setText(R.string.title_sensor);
                     return true;
             }
@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         mTextMessage = (TextView) findViewById(R.id.message);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
         openAimView();
     }
 
