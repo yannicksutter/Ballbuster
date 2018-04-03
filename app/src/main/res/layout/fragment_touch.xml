@@ -5,10 +5,16 @@
     android:layout_height="match_parent"
     tools:context=".TouchFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/touchTitle"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello Touch Fragment" />
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/control_margin"
+        android:id="@+id/touchControlLayout">
+    </RelativeLayout>
 
 </FrameLayout>

@@ -74,8 +74,9 @@ public class Control {
         yEnd = y + RADIUS_GRID;
         canvas.drawLine(xStart, yStart, xEnd, yEnd, paint);
 
-        color = ContextCompat.getColor(context, R.color.colorCirle);
+        color = ContextCompat.getColor(context, R.color.colorLine);
         paint.setColor(color);
+        canvas.drawCircle(x, y, RADIUS_GRID, paint);
 
     }
 
