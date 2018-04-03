@@ -6,8 +6,8 @@ import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 
-public class PairingView extends View {
-    public PairingView(Context context, @Nullable AttributeSet attrs) {
+public class AimView extends View {
+    public AimView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
