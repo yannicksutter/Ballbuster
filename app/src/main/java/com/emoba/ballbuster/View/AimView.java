@@ -2,6 +2,7 @@ package com.emoba.ballbuster.View;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.support.annotation.Nullable;
@@ -11,10 +12,14 @@ import android.view.View;
 
 public class AimView extends View {
 
+
+    private static final int RADIUS = 250;
     Point newPosition = null;
     Paint paint;
-    public AimView(Context context, @Nullable AttributeSet attrs) {
-        super(context, attrs);
+
+    Point center;
+    public AimView(Context context) {
+        super(context);
         paint = new Paint();
     }
 
@@ -22,11 +27,19 @@ public class AimView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        center = new Point(getWidth()/2, getHeight()/2);
+
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2);
+        paint.setColor(Color.BLACK);
+
+        canvas.drawCircle(center.x, center.y, RADIUS, paint);
+
         paint.setStyle(Paint.Style.FILL);
-        canvas.drawCircle(getWidth()/2, getHeight()/2, 5, paint);
-
-        canvas.drawCircle(newPosition.x, newPosition.y, 10, paint);
-
+        paint.setColor(Color.WHITE);
+        if(newPosition != null) {
+            canvas.drawCircle(newPosition.x, newPosition.y, 25, paint);
+        }
 
     }
 
@@ -36,20 +49,47 @@ public class AimView extends View {
 
         int x = (int) event.getX();
         int y = (int) event.getY();
-
+        double angle = angle(center.x, center.y, x, y);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                newPosition = new Point(x, y);
+                newPosition = pointOnCircle(center.x, center.y, RADIUS, angle);
                 break;
             case MotionEvent.ACTION_MOVE:
-                newPosition.set(x, y);
+                Point point = pointOnCircle(center.x, center.y, RADIUS, angle);
+                newPosition.set(point.x, point.y);
                 break;
             default:
-                newPosition = null;
         }
 
         postInvalidate();
 
         return true;
     }
+
+    private double angle(double cx, double cy, double x, double y) {
+        double deltaX = x - cx;
+        double deltaY = y - cy;
+        double radius = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
+        double nx = deltaX / radius;
+        double ny = deltaY / radius;
+        double theta = Math.toRadians(90) + Math.atan2(ny, nx);
+
+        return Double.compare(theta, 0.0) >= 0 ? Math.toDegrees(theta) : Math.toDegrees((theta)) + 360.0;
+    }
+
+    private Point pointOnCircle(double cX, double cY, double radius, double angle) {
+        return new Point((int) (cX + (radius * Math.sin(Math.toRadians(angle)))),
+                         (int) (cY - (radius * Math.cos(Math.toRadians(angle)))));
+    }
+
+    public double getAngleForHeading(double x, double y) {
+        float angle = (float) Math.toDegrees(Math.atan2(y - center.y+RADIUS, x-center.x));
+
+        if(angle < 0){
+            angle += 360;
+        }
+
+        return angle;
+    }
+
 }

@@ -11,5 +11,21 @@
         android:layout_height="match_parent"
         android:text="Hello Aim Fragment" />
 
+    <RelativeLayout
+        android:id="@+id/aim_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/button"
+            android:layout_width="108dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="75dp"
+            android:text="Calibrate"
+            android:onClick="calibrate"/>
+    </RelativeLayout>
+
 
 </FrameLayout>
