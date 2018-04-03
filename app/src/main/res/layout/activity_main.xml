@@ -8,23 +8,12 @@
     tools:context=".MainActivity"
     android:background="#3d12bc">
 
-    <fragment android:name="com.emoba.ballbuster.AimFragment"
-        android:id="@+id/aim"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <FrameLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
-    <fragment android:name="com.emoba.ballbuster.TouchFragment"
-        android:id="@+id/touch"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <fragment android:name="com.emoba.ballbuster.SensorFragment"
-        android:id="@+id/sensor"
-        android:layout_weight="1"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    </FrameLayout>
 
 
     <android.support.design.widget.BottomNavigationView

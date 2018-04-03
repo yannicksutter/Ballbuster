@@ -39,11 +39,10 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
         proxy.startDiscovering(getApplicationContext());
 
 
-
         //if connection successful
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
+        //Intent intent = new Intent(this, MainActivity.class);
+        //startActivity(intent);
+        //finish();
     }
 
 
