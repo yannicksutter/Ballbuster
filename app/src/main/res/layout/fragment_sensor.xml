@@ -5,10 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".SensorFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="Hello Sensor Fragment" />
+        android:layout_marginTop="@dimen/control_margin"
+        android:id="@+id/sensorControlLayout">
+    </RelativeLayout>
 
 </FrameLayout>

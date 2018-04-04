@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        openAimView();
+        openSensorView();
     }
 
     public void openAimView() {

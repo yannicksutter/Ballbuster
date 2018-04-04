@@ -1,12 +1,24 @@
 package com.emoba.ballbuster;
 
 import android.content.Context;
-import android.net.Uri;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+
+import com.emoba.ballbuster.View.SensorView;
+
+import java.util.Arrays;
+
+import static android.hardware.Sensor.TYPE_ACCELEROMETER;
+import static android.hardware.Sensor.TYPE_MAGNETIC_FIELD;
 
 
 /**
@@ -17,7 +29,7 @@ import android.view.ViewGroup;
  * Use the {@link SensorFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SensorFragment extends Fragment {
+public class SensorFragment extends Fragment implements SensorEventListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,6 +40,19 @@ public class SensorFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+    private SensorView sensorView;
+
+    private SensorManager mSensorManager;
+    private Sensor accelSensor;
+    private Sensor magfieldSensor;
+
+    private final float[] mAccelerometerReading = new float[3];
+    private final float[] mMagnetometerReading = new float[3];
+
+    private final float[] mRotationMatrix = new float[9];
+    private final float[] mOrientationAngles = new float[3];
+    private final float[] actualOrientationAngles = new float[3];
+
 
     public SensorFragment() {
         // Required empty public constructor
@@ -58,7 +83,29 @@ public class SensorFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
+        accelSensor = mSensorManager.getDefaultSensor(TYPE_ACCELEROMETER);
+        magfieldSensor = mSensorManager.getDefaultSensor(TYPE_MAGNETIC_FIELD);
+
+
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mSensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, magfieldSensor, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        // Don't receive any more updates from either sensor.
+        mSensorManager.unregisterListener(this);
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,12 +114,20 @@ public class SensorFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction("Sensor");
         }
-        return inflater.inflate(R.layout.fragment_sensor, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_sensor, container, false);
+
+        RelativeLayout controllerLayout = (RelativeLayout) view.findViewById(R.id.sensorControlLayout);
+        sensorView = new SensorView(getActivity());
+        controllerLayout.addView(sensorView);
+
+        return view;
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
+
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
@@ -87,6 +142,61 @@ public class SensorFragment extends Fragment {
         mListener = null;
     }
 
+
+
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+
+        if (sensorEvent.sensor.getType() == TYPE_ACCELEROMETER) {
+            System.arraycopy(sensorEvent.values, 0, mAccelerometerReading,
+                    0, mAccelerometerReading.length);
+        }
+        else if (sensorEvent.sensor.getType() == TYPE_MAGNETIC_FIELD) {
+            System.arraycopy(sensorEvent.values, 0, mMagnetometerReading,
+                    0, mMagnetometerReading.length);
+        }
+
+        // Update rotation matrix, which is needed to update orientation angles.
+        mSensorManager.getRotationMatrix(mRotationMatrix, null,
+                mAccelerometerReading, mMagnetometerReading);
+
+        // "mRotationMatrix" now has up-to-date information.
+
+        mSensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
+
+        if (!Arrays.equals(mOrientationAngles, actualOrientationAngles)) {
+            for (int i = 0; i < mOrientationAngles.length; i++) {
+                actualOrientationAngles[i] = mOrientationAngles[i];
+            }
+            orientationAnglesChanged();
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+
+    }
+
+    public void orientationAnglesChanged() {
+        Log.d("Sensor - orientation", Arrays.toString(mOrientationAngles));
+        updateview();
+
+
+    }
+
+    public void updateview() {
+        int width = sensorView.getWidth();
+        int height = sensorView.getHeight();
+
+        float newx = (width / 2) + width * mOrientationAngles[2];
+        float newy = (height / 2) - height * mOrientationAngles[1];
+
+
+
+        sensorView.setNewPosition((int)newx,(int)newy);
+    }
+
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -98,7 +208,6 @@ public class SensorFragment extends Fragment {
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(String title);
     }
 }
