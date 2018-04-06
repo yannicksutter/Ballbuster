@@ -12,6 +12,7 @@ import android.view.View;
 
 public class AimView extends View {
 
+    private Control controller;
 
     private static final int RADIUS = 250;
     Point newPosition = null;
@@ -24,21 +25,19 @@ public class AimView extends View {
     }
 
     @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        if(w > 0 && h > 0){
+            controller = new Control(getContext(), w, h);
+        }
+
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        center = new Point(getWidth()/2, getHeight()/2);
-
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(2);
-        paint.setColor(Color.BLACK);
-
-        canvas.drawCircle(center.x, center.y, RADIUS, paint);
-
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.WHITE);
-        if(newPosition != null) {
-            canvas.drawCircle(newPosition.x, newPosition.y, 25, paint);
+        if(controller != null){
+            controller.drawPosition(canvas, newPosition);
         }
 
     }
@@ -49,13 +48,13 @@ public class AimView extends View {
 
         int x = (int) event.getX();
         int y = (int) event.getY();
-        double angle = angle(center.x, center.y, x, y);
+        double angle = angle(controller.getX(), controller.getY(), x, y);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                newPosition = pointOnCircle(center.x, center.y, RADIUS, angle);
+                newPosition = pointOnCircle(controller.getX(), controller.getY(), controller.getRADIUS_GRID(), angle);
                 break;
             case MotionEvent.ACTION_MOVE:
-                Point point = pointOnCircle(center.x, center.y, RADIUS, angle);
+                Point point = pointOnCircle(controller.getX(), controller.getY(), controller.getRADIUS_GRID(), angle);
                 newPosition.set(point.x, point.y);
                 break;
             default:
@@ -83,12 +82,11 @@ public class AimView extends View {
     }
 
     public double getAngleForHeading(double x, double y) {
-        float angle = (float) Math.toDegrees(Math.atan2(y - center.y+RADIUS, x-center.x));
+        float angle = (float) Math.toDegrees(Math.atan2(y - controller.getY()+controller.getRADIUS_GRID(), x-controller.getX()));
 
         if(angle < 0){
             angle += 360;
         }
-
         return angle;
     }
 

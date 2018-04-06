@@ -40,7 +40,6 @@ public class TheBallControllerThread extends HandlerThread {
 
     }
 
-
     @Override
     protected void onLooperPrepared() {
         super.onLooperPrepared();
