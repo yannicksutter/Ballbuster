@@ -22,6 +22,9 @@ public class MainActivity extends AppCompatActivity implements
 
     private TextView mTextMessage;
 
+    private Fragment fragment = null;
+
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     public void openAimView() {
-        AimFragment fragment = new AimFragment();
+        fragment = new AimFragment();
         setFragment(fragment);
     }
 
@@ -81,5 +84,11 @@ public class MainActivity extends AppCompatActivity implements
     public void onFragmentInteraction(String title) {
         Log.d("bla", title);
         getSupportActionBar().setTitle(title);
+    }
+
+    public void calibrate(View v) {
+        if(fragment instanceof AimFragment) {
+            ((AimFragment)fragment).calibrate(v);
+        }
     }
 }

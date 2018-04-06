@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.emoba.ballbuster.View.AimView;
 
@@ -115,7 +116,8 @@ public class AimFragment extends Fragment {
     }
 
     public void calibrate(View v) {
-
+        //TODO calibrate SPhero
+        Toast.makeText(getActivity(), "Calibrated Sphero", Toast.LENGTH_LONG).show();
     }
 
 
