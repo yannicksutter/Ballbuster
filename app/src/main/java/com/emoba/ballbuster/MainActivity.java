@@ -3,6 +3,7 @@ package com.emoba.ballbuster;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -21,7 +22,7 @@ public class MainActivity extends AppCompatActivity implements
         SensorFragment.OnFragmentInteractionListener {
 
     private TextView mTextMessage;
-
+    private TheBallControllerThread ballControllerThread;
     private Fragment fragment = null;
 
 
@@ -54,7 +55,10 @@ public class MainActivity extends AppCompatActivity implements
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        openSensorView();
+        ballControllerThread = new TheBallControllerThread("ballHandler");
+        ballControllerThread.start();
+
+        openAimView();
     }
 
     public void openAimView() {
@@ -82,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onFragmentInteraction(String title) {
-        Log.d("bla", title);
         getSupportActionBar().setTitle(title);
     }
 
@@ -90,5 +93,9 @@ public class MainActivity extends AppCompatActivity implements
         if(fragment instanceof AimFragment) {
             ((AimFragment)fragment).calibrate(v);
         }
+    }
+
+    public Handler getBallHandler() {
+        return ballControllerThread.getBallThreadHandler();
     }
 }

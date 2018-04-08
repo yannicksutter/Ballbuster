@@ -6,6 +6,8 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -178,9 +180,10 @@ public class SensorFragment extends Fragment implements SensorEventListener {
     }
 
     public void orientationAnglesChanged() {
-        Log.d("Sensor - orientation", Arrays.toString(mOrientationAngles));
+//        Log.d("Sensor - orientation", Arrays.toString(mOrientationAngles));
         updateview();
 
+        sendToBall();
 
     }
 
@@ -191,9 +194,28 @@ public class SensorFragment extends Fragment implements SensorEventListener {
         float newx = (width / 2) + width * mOrientationAngles[2];
         float newy = (height / 2) - height * mOrientationAngles[1];
 
-
-
         sensorView.setNewPosition((int)newx,(int)newy);
+    }
+
+    private void sendToBall() {
+        MainActivity activity = (MainActivity) getActivity();
+        Handler ballHandler = activity.getBallHandler();
+
+        Message msg= ballHandler.obtainMessage();
+
+        msg.what = TheBallControllerThread.BALL_CRUSE;
+
+        Bundle content = new Bundle();
+        //TODO: calculate meanifull values
+        float headingvalue = mOrientationAngles[2];
+        float velocityvalue = mOrientationAngles[1];
+
+        content.putFloat(TheBallControllerThread.HEADING, headingvalue);
+        content.putFloat(TheBallControllerThread.VELOCITY, velocityvalue);
+
+        msg.setData(content);
+
+        msg.sendToTarget();
     }
 
 

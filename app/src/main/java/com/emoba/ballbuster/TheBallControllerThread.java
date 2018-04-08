@@ -25,18 +25,16 @@ public class TheBallControllerThread extends HandlerThread {
     public static final String VELOCITY = "velocity";
 
     private final SpheroRobotProxy proxy;
-    private final Handler inputHandler;
-    private Handler roboHandler;
+    private Handler ballHandler;
     private float heading = 0;
     private float velocity = 0;
     private ScheduledFuture workerTask;
 
-    public TheBallControllerThread(String name, Handler inputHandler) {
+    public TheBallControllerThread(String name) {
         super(name);
 
         proxy = SpheroRobotFactory.getActualRobotProxy();
 
-        this.inputHandler = inputHandler;
 
     }
 
@@ -44,12 +42,13 @@ public class TheBallControllerThread extends HandlerThread {
     protected void onLooperPrepared() {
         super.onLooperPrepared();
 
-        roboHandler = new Handler(getLooper()) {
+        ballHandler = new Handler(getLooper()) {
             @Override
             public void handleMessage(Message msg) {
                 if (msg.what == BALL_CRUSE) {
                     heading = msg.getData().getFloat(HEADING);
                     velocity = msg.getData().getFloat(VELOCITY);
+
                 } else if (msg.what == BALL_CALIBRATE) {
                     proxy.drive(msg.getData().getFloat(HEADING),0);
                     proxy.setZeroHeading();
@@ -68,15 +67,21 @@ public class TheBallControllerThread extends HandlerThread {
     }
 
     public Handler getBallThreadHandler() {
-        return roboHandler;
+        return ballHandler;
     }
 
     private class TalkToTheBallThread extends Thread {
+        private float headingbefore;
+        private float velocitybefore;
+
         @Override
         public void run() {
-            proxy.drive(heading, velocity);
+            //check for invalidation
+            if (heading != headingbefore || velocity != velocitybefore){
+                proxy.drive(heading, velocity);
+            }
 
-            Log.i("TheBall", "sent new vectors:" + heading +", "+velocity);
+//            Log.i("TheBall", "sent new vectors:" + heading +", "+velocity);
 
         }
     }
