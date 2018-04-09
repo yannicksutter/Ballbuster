@@ -3,6 +3,8 @@ package com.emoba.ballbuster;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +32,8 @@ public class AimFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private AimView aimView;
 
     private OnFragmentInteractionListener mListener;
 
@@ -75,13 +79,12 @@ public class AimFragment extends Fragment {
 
         RelativeLayout layout = (RelativeLayout) view.findViewById(R.id.aim_view);
 
-        AimView aimView = new AimView(getActivity());
+        aimView = new AimView(getActivity());
         layout.addView(aimView);
 
 
         return view;
     }
-
 
     @Override
     public void onAttach(Context context) {
@@ -118,7 +121,27 @@ public class AimFragment extends Fragment {
     public void calibrate(View v) {
         //TODO calibrate SPhero
         Toast.makeText(getActivity(), "Calibrated Sphero", Toast.LENGTH_LONG).show();
+
+        MainActivity activity = (MainActivity) getActivity();
+        Handler ballHandler = activity.getBallHandler();
+
+        Message msg= ballHandler.obtainMessage();
+
+        msg.what = TheBallControllerThread.BALL_CRUSE;
+
+        Bundle content = new Bundle();
+
+        float headingvalue = aimView.getAngleForHeading(aimView.getX(), aimView.getY());
+
+        content.putFloat(TheBallControllerThread.HEADING, headingvalue);
+        content.putFloat(TheBallControllerThread.VELOCITY, 0);
+
+        msg.setData(content);
+
+        msg.sendToTarget();
+        activity.getBallControllerThread().stopTalkingToBall();
     }
+
 
 
 }

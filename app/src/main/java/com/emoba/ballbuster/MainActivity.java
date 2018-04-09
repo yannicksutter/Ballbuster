@@ -98,4 +98,8 @@ public class MainActivity extends AppCompatActivity implements
     public Handler getBallHandler() {
         return ballControllerThread.getBallThreadHandler();
     }
+
+    public TheBallControllerThread getBallControllerThread() {
+        return ballControllerThread;
+    }
 }

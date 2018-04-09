@@ -81,7 +81,7 @@ public class AimView extends View {
                          (int) (cY - (radius * Math.cos(Math.toRadians(angle)))));
     }
 
-    public double getAngleForHeading(double x, double y) {
+    public float getAngleForHeading(double x, double y) {
         float angle = (float) Math.toDegrees(Math.atan2(y - controller.getY()+controller.getRADIUS_GRID(), x-controller.getX()));
 
         if(angle < 0){
