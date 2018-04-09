@@ -71,14 +71,16 @@ public class TheBallControllerThread extends HandlerThread {
     }
 
     private class TalkToTheBallThread extends Thread {
-        private float headingbefore;
-        private float velocitybefore;
+        private float headingbefore = 0;
+        private float velocitybefore = 0;
 
         @Override
         public void run() {
             //check for invalidation
             if (heading != headingbefore || velocity != velocitybefore){
                 proxy.drive(heading, velocity);
+                headingbefore = heading;
+                velocitybefore = velocity;
             }
 
 //            Log.i("TheBall", "sent new vectors:" + heading +", "+velocity);
