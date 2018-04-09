@@ -139,7 +139,6 @@ public class AimFragment extends Fragment {
         msg.setData(content);
 
         msg.sendToTarget();
-        activity.getBallControllerThread().stopTalkingToBall();
     }
 
 
