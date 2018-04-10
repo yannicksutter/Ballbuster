@@ -2,12 +2,16 @@ package com.emoba.ballbuster;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.emoba.ballbuster.View.Control;
 import com.emoba.ballbuster.View.TouchView;
 
 
@@ -19,7 +23,7 @@ import com.emoba.ballbuster.View.TouchView;
  * Use the {@link TouchFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TouchFragment extends Fragment {
+public class TouchFragment extends Fragment implements View.OnTouchListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -63,6 +67,9 @@ public class TouchFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+
+
     }
 
     @Override
@@ -77,8 +84,43 @@ public class TouchFragment extends Fragment {
         RelativeLayout controllerLayout = (RelativeLayout) view.findViewById(R.id.touchControlLayout);
         touchView = new TouchView(getActivity());
         controllerLayout.addView(touchView);
+        touchView.setOnTouchListener(this);
 
         return view;
+    }
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        touchView.setNewPosition((int)event.getX(), (int)event.getY());
+
+        sendToBall();
+        return true;
+    }
+
+
+    private void sendToBall() {
+        float headingvalue = 0;
+        float velocityvalue = 0;
+
+        MainActivity activity = (MainActivity) getActivity();
+        Handler ballHandler = activity.getBallHandler();
+
+        Message msg= ballHandler.obtainMessage();
+        msg.what = TheBallControllerThread.BALL_CRUSE;
+        Bundle content = new Bundle();
+
+        Control controller = this.touchView.getController();
+        if (controller != null) {
+            headingvalue = controller.getAngleOfPointOnCircle();
+            velocityvalue = controller.getDistanceFromMiddleLine();
+        }
+
+        content.putFloat(TheBallControllerThread.HEADING, headingvalue);
+        content.putFloat(TheBallControllerThread.VELOCITY, velocityvalue);
+
+        msg.setData(content);
+        msg.sendToTarget();
     }
 
 
@@ -99,6 +141,7 @@ public class TouchFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
+
 
     /**
      * This interface must be implemented by activities that contain this

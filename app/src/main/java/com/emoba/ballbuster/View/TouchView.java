@@ -34,4 +34,13 @@ public class TouchView extends View {
             controller.drawPosition(canvas, nextPosition);
         }
     }
+
+    public void setNewPosition(int x, int y) {
+        nextPosition = new Point(x,y);
+        postInvalidate();
+    }
+
+    public Control getController() {
+        return controller;
+    }
 }
