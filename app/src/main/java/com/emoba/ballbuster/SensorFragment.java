@@ -15,12 +15,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
+import com.emoba.ballbuster.View.Control;
 import com.emoba.ballbuster.View.SensorView;
 
 import java.util.Arrays;
 
-import static android.hardware.Sensor.TYPE_GAME_ROTATION_VECTOR;
-
+import static android.hardware.Sensor.TYPE_ACCELEROMETER;
+import static android.hardware.Sensor.TYPE_MAGNETIC_FIELD;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,11 +38,16 @@ public class SensorFragment extends Fragment implements SensorEventListener {
     private SensorView sensorView;
 
     private SensorManager mSensorManager;
-    private Sensor gamesensor;
 
+
+    private final float[] mAccelerometerReading = new float[3];
+    private final float[] mMagnetometerReading = new float[3];
+
+    private final float[] mRotationMatrix = new float[9];
     private final float[] mOrientationAngles = new float[3];
-    private final float[] actualOrientationAngles = new float[3];
-
+    private float[] actualOrientationAngles = new float[3];
+    private Sensor sensorAcce;
+    private Sensor sensorMag;
 
     public SensorFragment() {
         // Required empty public constructor
@@ -68,13 +74,15 @@ public class SensorFragment extends Fragment implements SensorEventListener {
         super.onCreate(savedInstanceState);
 
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-        gamesensor = mSensorManager.getDefaultSensor(TYPE_GAME_ROTATION_VECTOR);
+        sensorAcce = mSensorManager.getDefaultSensor(TYPE_ACCELEROMETER);
+        sensorMag = mSensorManager.getDefaultSensor(TYPE_MAGNETIC_FIELD);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, gamesensor, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this,sensorAcce , SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, sensorMag, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
     }
 
 
@@ -122,14 +130,19 @@ public class SensorFragment extends Fragment implements SensorEventListener {
     }
 
 
-
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
 
-        if (sensorEvent.sensor.getType() == TYPE_GAME_ROTATION_VECTOR) {
-            System.arraycopy(sensorEvent.values, 0, mOrientationAngles,0, mOrientationAngles.length);
+        if (sensorEvent.sensor.getType() == TYPE_ACCELEROMETER) {
+            System.arraycopy(sensorEvent.values, 0, mAccelerometerReading,0, mAccelerometerReading.length);
+        }
+        else if (sensorEvent.sensor.getType() == TYPE_MAGNETIC_FIELD) {
+            System.arraycopy(sensorEvent.values, 0, mMagnetometerReading,0, mMagnetometerReading.length);
         }
 
+        mSensorManager.getRotationMatrix(mRotationMatrix, null, mAccelerometerReading, mMagnetometerReading);
+
+        mSensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
 
         if (!Arrays.equals(mOrientationAngles, actualOrientationAngles)) {
             for (int i = 0; i < mOrientationAngles.length; i++) {
@@ -154,32 +167,33 @@ public class SensorFragment extends Fragment implements SensorEventListener {
         int width = sensorView.getWidth();
         int height = sensorView.getHeight();
 
-        Log.d("game", "updateview: "+actualOrientationAngles[0]+" "+actualOrientationAngles[1]+" "+actualOrientationAngles[2]);
-
-        float newx = (width / 2) + width * actualOrientationAngles[1];
-        float newy = (height / 2) + height * actualOrientationAngles[0];
+        float newx = (width / 2) + width * actualOrientationAngles[2];
+        float newy = (height / 2) - height * actualOrientationAngles[1];
 
         sensorView.setNewPosition((int)newx,(int)newy);
     }
 
     private void sendToBall() {
+        float headingvalue = 0;
+        float velocityvalue = 0;
+
         MainActivity activity = (MainActivity) getActivity();
         Handler ballHandler = activity.getBallHandler();
 
         Message msg= ballHandler.obtainMessage();
-
         msg.what = TheBallControllerThread.BALL_CRUSE;
-
         Bundle content = new Bundle();
-        //TODO: calculate meanifull values
-        float headingvalue = mOrientationAngles[2];
-        float velocityvalue = mOrientationAngles[1];
+
+        Control controller = this.sensorView.getController();
+        if (controller != null) {
+            headingvalue = controller.getAngleOfPointOnCircle();
+            velocityvalue = controller.getDistanceFromMiddleLine();
+        }
 
         content.putFloat(TheBallControllerThread.HEADING, headingvalue);
         content.putFloat(TheBallControllerThread.VELOCITY, velocityvalue);
 
         msg.setData(content);
-
         msg.sendToTarget();
     }
 
@@ -197,4 +211,5 @@ public class SensorFragment extends Fragment implements SensorEventListener {
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(String title);
     }
+
 }

@@ -98,6 +98,34 @@ public class Control {
 
     }
 
+    public float getAngleOfPointOnCircle() {
+        return (float) angle(x, y, lastPosition.x, lastPosition.y);
+    }
+
+    public float getDistanceFromMiddleLine() {
+        float distCenter = ((float)y - (float)lastPosition.y) / (float)RADIUS_GRID;
+
+        if (distCenter > 1.0) {
+            return 1.0f;
+        } else if (distCenter < 0.0) {
+            return 0.0f;
+        }
+
+        return distCenter;
+    }
+
+    private double angle(double cx, double cy, double x, double y) {
+        double deltaX = x - cx;
+        double deltaY = y - cy;
+        double radius = Math.sqrt((deltaX * deltaX) + (deltaY * deltaY));
+        double nx = deltaX / radius;
+        double ny = deltaY / radius;
+        double theta = Math.toRadians(90) + Math.atan2(ny, nx);
+
+        return Double.compare(theta, 0.0) >= 0 ? Math.toDegrees(theta) : Math.toDegrees((theta)) + 360.0;
+    }
+
+
     public int getX() {
         return x;
     }

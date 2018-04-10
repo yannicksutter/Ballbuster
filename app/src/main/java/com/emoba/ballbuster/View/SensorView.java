@@ -21,20 +21,16 @@ public class SensorView extends View {
     private Object canvas;
 
     public SensorView(Context context) {
-
         super(context);
         this.context = context;
-
     }
 
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-
         if(w > 0 && h > 0){
             controller = new Control(getContext(), w, h);
         }
-
     }
 
     @Override
@@ -52,5 +48,9 @@ public class SensorView extends View {
         newPosition = new Point(x,y);
         Log.d("lsdk",x + " " + y);
         postInvalidate();
+    }
+
+    public Control getController() {
+        return controller;
     }
 }
