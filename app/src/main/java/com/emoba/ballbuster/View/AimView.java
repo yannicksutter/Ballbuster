@@ -17,6 +17,8 @@ public class AimView extends View {
     private static final int RADIUS = 250;
     Point newPosition = null;
     Paint paint;
+    int x;
+    int y;
 
     Point center;
     public AimView(Context context) {
@@ -46,8 +48,8 @@ public class AimView extends View {
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
 
-        int x = (int) event.getX();
-        int y = (int) event.getY();
+        x = (int) event.getX();
+        y = (int) event.getY();
         double angle = angle(controller.getX(), controller.getY(), x, y);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -81,13 +83,9 @@ public class AimView extends View {
                          (int) (cY - (radius * Math.cos(Math.toRadians(angle)))));
     }
 
-    public float getAngleForHeading(double x, double y) {
-        float angle = (float) Math.toDegrees(Math.atan2(y - controller.getY()+controller.getRADIUS_GRID(), x-controller.getX()));
 
-        if(angle < 0){
-            angle += 360;
-        }
-        return angle;
+    public float getAngleOfPointOnCircle() {
+        return (float) (180-angle(controller.getX(), controller.getY(), x, y));
     }
 
 

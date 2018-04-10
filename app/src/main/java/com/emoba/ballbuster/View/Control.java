@@ -117,4 +117,8 @@ public class Control {
     public int getRADIUS_GRID() {
         return RADIUS_GRID;
     }
+
+    public int getMARGIN_GRID() {
+        return MARGIN_GRID;
+    }
 }

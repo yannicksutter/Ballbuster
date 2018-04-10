@@ -127,11 +127,11 @@ public class AimFragment extends Fragment {
 
         Message msg= ballHandler.obtainMessage();
 
-        msg.what = TheBallControllerThread.BALL_CRUSE;
+        msg.what = TheBallControllerThread.BALL_CALIBRATE;
 
         Bundle content = new Bundle();
 
-        float headingvalue = aimView.getAngleForHeading(aimView.getX(), aimView.getY());
+        float headingvalue = aimView.getAngleOfPointOnCircle();
 
         content.putFloat(TheBallControllerThread.HEADING, headingvalue);
         content.putFloat(TheBallControllerThread.VELOCITY, 0);
