@@ -19,8 +19,7 @@ import com.emoba.ballbuster.View.SensorView;
 
 import java.util.Arrays;
 
-import static android.hardware.Sensor.TYPE_ACCELEROMETER;
-import static android.hardware.Sensor.TYPE_MAGNETIC_FIELD;
+import static android.hardware.Sensor.TYPE_GAME_ROTATION_VECTOR;
 
 
 /**
@@ -32,26 +31,14 @@ import static android.hardware.Sensor.TYPE_MAGNETIC_FIELD;
  * create an instance of this fragment.
  */
 public class SensorFragment extends Fragment implements SensorEventListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
     private SensorView sensorView;
 
     private SensorManager mSensorManager;
-    private Sensor accelSensor;
-    private Sensor magfieldSensor;
+    private Sensor gamesensor;
 
-    private final float[] mAccelerometerReading = new float[3];
-    private final float[] mMagnetometerReading = new float[3];
-
-    private final float[] mRotationMatrix = new float[9];
     private final float[] mOrientationAngles = new float[3];
     private final float[] actualOrientationAngles = new float[3];
 
@@ -72,8 +59,6 @@ public class SensorFragment extends Fragment implements SensorEventListener {
     public static SensorFragment newInstance(String param1, String param2) {
         SensorFragment fragment = new SensorFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -81,23 +66,15 @@ public class SensorFragment extends Fragment implements SensorEventListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
 
         mSensorManager = (SensorManager) getActivity().getSystemService(Context.SENSOR_SERVICE);
-        accelSensor = mSensorManager.getDefaultSensor(TYPE_ACCELEROMETER);
-        magfieldSensor = mSensorManager.getDefaultSensor(TYPE_MAGNETIC_FIELD);
-
-
+        gamesensor = mSensorManager.getDefaultSensor(TYPE_GAME_ROTATION_VECTOR);
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        mSensorManager.registerListener(this, accelSensor, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
-        mSensorManager.registerListener(this, magfieldSensor, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, gamesensor, SensorManager.SENSOR_DELAY_NORMAL, SensorManager.SENSOR_DELAY_UI);
     }
 
 
@@ -149,22 +126,10 @@ public class SensorFragment extends Fragment implements SensorEventListener {
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
 
-        if (sensorEvent.sensor.getType() == TYPE_ACCELEROMETER) {
-            System.arraycopy(sensorEvent.values, 0, mAccelerometerReading,
-                    0, mAccelerometerReading.length);
-        }
-        else if (sensorEvent.sensor.getType() == TYPE_MAGNETIC_FIELD) {
-            System.arraycopy(sensorEvent.values, 0, mMagnetometerReading,
-                    0, mMagnetometerReading.length);
+        if (sensorEvent.sensor.getType() == TYPE_GAME_ROTATION_VECTOR) {
+            System.arraycopy(sensorEvent.values, 0, mOrientationAngles,0, mOrientationAngles.length);
         }
 
-        // Update rotation matrix, which is needed to update orientation angles.
-        mSensorManager.getRotationMatrix(mRotationMatrix, null,
-                mAccelerometerReading, mMagnetometerReading);
-
-        // "mRotationMatrix" now has up-to-date information.
-
-        mSensorManager.getOrientation(mRotationMatrix, mOrientationAngles);
 
         if (!Arrays.equals(mOrientationAngles, actualOrientationAngles)) {
             for (int i = 0; i < mOrientationAngles.length; i++) {
@@ -182,17 +147,17 @@ public class SensorFragment extends Fragment implements SensorEventListener {
     public void orientationAnglesChanged() {
 //        Log.d("Sensor - orientation", Arrays.toString(mOrientationAngles));
         updateview();
-
         sendToBall();
-
     }
 
     public void updateview() {
         int width = sensorView.getWidth();
         int height = sensorView.getHeight();
 
-        float newx = (width / 2) + width * mOrientationAngles[2];
-        float newy = (height / 2) - height * mOrientationAngles[1];
+        Log.d("game", "updateview: "+actualOrientationAngles[0]+" "+actualOrientationAngles[1]+" "+actualOrientationAngles[2]);
+
+        float newx = (width / 2) + width * actualOrientationAngles[1];
+        float newy = (height / 2) + height * actualOrientationAngles[0];
 
         sensorView.setNewPosition((int)newx,(int)newy);
     }
