@@ -20,4 +20,10 @@
         android:icon="@android:drawable/ic_menu_mylocation"
         android:title="@string/title_sensor" />
 
+    <item
+        android:id="@+id/ballKiller"
+        android:enabled="true"
+        android:icon="@android:drawable/ic_delete"
+        android:title="@string/title_sensor" />
+
 </menu>

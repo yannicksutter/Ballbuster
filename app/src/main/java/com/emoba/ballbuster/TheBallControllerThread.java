@@ -24,6 +24,7 @@ public class TheBallControllerThread extends HandlerThread {
     public static final String HEADING = "heading";
     public static final String VELOCITY = "velocity";
     public static final int BALL_ROTATE = 3;
+    public static final int BALL_DISCONNECT = 4;
 
     private final SpheroRobotProxy proxy;
     private Handler ballHandler;
@@ -59,6 +60,8 @@ public class TheBallControllerThread extends HandlerThread {
                 } else if (msg.what == BALL_ROTATE) {
                     proxy.drive(msg.getData().getFloat(HEADING),0);
                     Log.i("TheBall", "Calibrated with: " + heading);
+                } else if (msg.what == BALL_DISCONNECT) {
+                    proxy.disconnect();
                 }
 
             }
