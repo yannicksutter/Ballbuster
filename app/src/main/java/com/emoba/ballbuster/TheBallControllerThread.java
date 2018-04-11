@@ -23,6 +23,7 @@ public class TheBallControllerThread extends HandlerThread {
     public static final int BALL_CALIBRATE = 2;
     public static final String HEADING = "heading";
     public static final String VELOCITY = "velocity";
+    private static final int BALL_ROTATE = 3;
 
     private final SpheroRobotProxy proxy;
     private Handler ballHandler;
@@ -50,13 +51,14 @@ public class TheBallControllerThread extends HandlerThread {
                     velocity = msg.getData().getFloat(VELOCITY);
 
                 } else if (msg.what == BALL_CALIBRATE) {
-                    proxy.drive(msg.getData().getFloat(HEADING),0);
-
                     proxy.setZeroHeading();
                     proxy.setLed(0,1,0);
                     proxy.setLed(0,0,1);
+                } else if (msg.what == BALL_ROTATE) {
+                    proxy.drive(msg.getData().getFloat(HEADING),0);
                     Log.i("TheBall", "Calibrated with: " + heading);
                 }
+
             }
         };
 

@@ -21,6 +21,7 @@ public class AimView extends View {
     int y;
 
     Point center;
+
     public AimView(Context context) {
         super(context);
         paint = new Paint();
