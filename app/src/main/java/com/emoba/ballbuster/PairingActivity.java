@@ -32,15 +32,17 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
 
         if (this.checkSelfPermission(ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestCoarsePermission();
-        } else if(this.checkSelfPermission(BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED){
+        }
+        if(this.checkSelfPermission(BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED){
             requestBltAdminPermission();
 
-        } else if(this.checkSelfPermission(BLUETOOTH) != PackageManager.PERMISSION_GRANTED){
+        }
+        if(this.checkSelfPermission(BLUETOOTH) != PackageManager.PERMISSION_GRANTED){
             requestBltPermission();
 
-        } else {
-            startDiscovery();
         }
+        startDiscovery();
+
     }
 
     private void requestBltAdminPermission() {
@@ -62,36 +64,22 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
     private void startDiscovery() {
         textView.setText("Discovering for Sphero Device...");
         boolean onEmulator = Build.PRODUCT.startsWith("sdk");
-        proxy = SpheroRobotFactory.createRobot(true);
+        proxy = SpheroRobotFactory.createRobot(onEmulator);
         proxy.setDiscoveryListener(this);
         proxy.startDiscovering(getApplicationContext());
 
-        //TODO: Remove this for production, used to go directly to sensor.
-        proxy.stopDiscovering();
-        startMainActivity();
+
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startDiscovery();
-                } else {
-                    requestCoarsePermission();
-                }
-                return;
-            }
-            case 2: {
-                Log.d("Permissions", "onRequestPermissionsResult: " + grantResults[0]);
-            }
-        }
     }
 
     @Override
     public void handleRobotChangedState(SpheroRobotBluetoothNotification notification) {
-        proxy.stopDiscovering();
+
+        textView.setText(notification.name());
 
         if (notification == SpheroRobotBluetoothNotification.Online) {
 
@@ -100,19 +88,7 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
 
             startMainActivity();
 
-
-        } else {
-            textView.setText("Connection failed...");
-            Log.e("Sphero", "Connection failed.");
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //TODO
-                    //connectionFailedDialog();
-                }
-            });
-
+            proxy.stopDiscovering();
         }
 
     }

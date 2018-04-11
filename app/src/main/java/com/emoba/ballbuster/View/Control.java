@@ -103,7 +103,7 @@ public class Control {
     }
 
     public float getDistanceFromMiddleLine() {
-        float distCenter = ((float)y - (float)lastPosition.y) / (float)RADIUS_GRID;
+        float distCenter = Math.abs(((float)y - (float)lastPosition.y) / (float)RADIUS_GRID);
 
         if (distCenter > 1.0) {
             return 1.0f;
