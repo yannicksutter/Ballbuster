@@ -51,6 +51,7 @@ public class TheBallControllerThread extends HandlerThread {
 
                 } else if (msg.what == BALL_CALIBRATE) {
                     proxy.drive(msg.getData().getFloat(HEADING),0);
+
                     proxy.setZeroHeading();
                     proxy.setLed(0,1,0);
                     proxy.setLed(0,0,1);

@@ -64,13 +64,11 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
     private void startDiscovery() {
         textView.setText("Discovering for Sphero Device...");
         boolean onEmulator = Build.PRODUCT.startsWith("sdk");
-        proxy = SpheroRobotFactory.createRobot(true);
+        proxy = SpheroRobotFactory.createRobot(onEmulator);
         proxy.setDiscoveryListener(this);
         proxy.startDiscovering(getApplicationContext());
 
-        //TODO: Remove this for production, used to go directly to sensor.
-        proxy.stopDiscovering();
-        startMainActivity();
+
     }
 
     @Override
@@ -80,7 +78,8 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
 
     @Override
     public void handleRobotChangedState(SpheroRobotBluetoothNotification notification) {
-        proxy.stopDiscovering();
+
+        textView.setText(notification.name());
 
         if (notification == SpheroRobotBluetoothNotification.Online) {
 
@@ -89,19 +88,7 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
 
             startMainActivity();
 
-
-        } else {
-            textView.setText("Connection failed...");
-            Log.e("Sphero", "Connection failed.");
-
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //TODO
-                    //connectionFailedDialog();
-                }
-            });
-
+            proxy.stopDiscovering();
         }
 
     }
