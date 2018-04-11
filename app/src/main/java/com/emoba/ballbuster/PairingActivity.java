@@ -32,15 +32,17 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
 
         if (this.checkSelfPermission(ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestCoarsePermission();
-        } else if(this.checkSelfPermission(BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED){
+        }
+        if(this.checkSelfPermission(BLUETOOTH_ADMIN) != PackageManager.PERMISSION_GRANTED){
             requestBltAdminPermission();
 
-        } else if(this.checkSelfPermission(BLUETOOTH) != PackageManager.PERMISSION_GRANTED){
+        }
+        if(this.checkSelfPermission(BLUETOOTH) != PackageManager.PERMISSION_GRANTED){
             requestBltPermission();
 
-        } else {
-            startDiscovery();
         }
+        startDiscovery();
+
     }
 
     private void requestBltAdminPermission() {
@@ -72,19 +74,6 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
-        switch (requestCode) {
-            case 1: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    startDiscovery();
-                } else {
-                    requestCoarsePermission();
-                }
-                return;
-            }
-            case 2: {
-                Log.d("Permissions", "onRequestPermissionsResult: " + grantResults[0]);
-            }
-        }
     }
 
     @Override
