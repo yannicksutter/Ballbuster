@@ -24,6 +24,6 @@
         android:id="@+id/ballKiller"
         android:enabled="true"
         android:icon="@android:drawable/ic_delete"
-        android:title="@string/title_sensor" />
+        android:title="@string/title_exit" />
 
 </menu>
