@@ -23,6 +23,7 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
 
     TextView textView;
     SpheroRobotProxy proxy;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

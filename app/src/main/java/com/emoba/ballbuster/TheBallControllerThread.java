@@ -43,6 +43,8 @@ public class TheBallControllerThread extends HandlerThread {
     protected void onLooperPrepared() {
         super.onLooperPrepared();
 
+        proxy.setBackLedBrightness(1);
+
         ballHandler = new Handler(getLooper()) {
             @Override
             public void handleMessage(Message msg) {

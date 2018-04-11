@@ -103,15 +103,20 @@ public class Control {
     }
 
     public float getDistanceFromMiddleLine() {
-        float distCenter = Math.abs(((float)y - (float)lastPosition.y) / (float)RADIUS_GRID);
+        float yDistCenter = Math.abs(((float)y - (float)lastPosition.y) / (float)RADIUS_GRID);
+        float xDistCenter = Math.abs(((float)x - (float)lastPosition.x) / (float)RADIUS_GRID);
 
-        if (distCenter > 1.0) {
+        float breakfactor = 0.6f;
+
+        float dist = (float) Math.sqrt((xDistCenter * xDistCenter) + (yDistCenter * yDistCenter)) * breakfactor;
+
+        if (dist > 1.0) {
             return 1.0f;
-        } else if (distCenter < 0.0) {
+        } else if (dist < 0.0) {
             return 0.0f;
         }
 
-        return distCenter;
+        return dist;
     }
 
     private double angle(double cx, double cy, double x, double y) {
