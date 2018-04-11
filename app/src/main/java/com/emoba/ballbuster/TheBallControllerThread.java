@@ -23,7 +23,7 @@ public class TheBallControllerThread extends HandlerThread {
     public static final int BALL_CALIBRATE = 2;
     public static final String HEADING = "heading";
     public static final String VELOCITY = "velocity";
-    private static final int BALL_ROTATE = 3;
+    public static final int BALL_ROTATE = 3;
 
     private final SpheroRobotProxy proxy;
     private Handler ballHandler;

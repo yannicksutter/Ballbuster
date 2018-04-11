@@ -163,11 +163,6 @@ public class AimFragment extends Fragment implements View.OnTouchListener{
 
         Bundle content = new Bundle();
 
-        float headingvalue = aimView.getAngleOfPointOnCircle();
-
-        content.putFloat(TheBallControllerThread.HEADING, headingvalue);
-        content.putFloat(TheBallControllerThread.VELOCITY, 0);
-
         msg.setData(content);
 
         msg.sendToTarget();
