@@ -1,14 +1,17 @@
 package com.emoba.ballbuster;
 
 import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import ch.fhnw.edu.emoba.spherolib.SpheroRobotDiscoveryListener;
@@ -23,12 +26,16 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
 
     TextView textView;
     SpheroRobotProxy proxy;
+    BluetoothAdapter bluetoothAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pairing);
         textView = findViewById(R.id.textView);
         textView.setText("Checking permission...");
+
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         if (this.checkSelfPermission(ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestCoarsePermission();
@@ -41,6 +48,11 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
             requestBltPermission();
 
         }
+        if(bluetoothAdapter.isEnabled()){
+            Button btn = findViewById(R.id.button);
+            btn.setVisibility(View.GONE);
+        }
+
         startDiscovery();
 
     }
@@ -62,13 +74,16 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
     }
 
     private void startDiscovery() {
-        textView.setText("Discovering for Sphero Device...");
-        boolean onEmulator = Build.PRODUCT.startsWith("sdk");
-        proxy = SpheroRobotFactory.createRobot(onEmulator);
-        proxy.setDiscoveryListener(this);
-        proxy.startDiscovering(getApplicationContext());
+        if(!bluetoothAdapter.isEnabled()){
+            textView.setText("Bluetooth is disabled");
 
-
+        }else {
+            textView.setText("Discovering for Sphero Device...");
+            boolean onEmulator = Build.PRODUCT.startsWith("sdk");
+            proxy = SpheroRobotFactory.createRobot(onEmulator);
+            proxy.setDiscoveryListener(this);
+            proxy.startDiscovering(getApplicationContext());
+        }
     }
 
     @Override
@@ -101,5 +116,17 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
         ActivityCompat.finishAffinity(this);
     }
 
+    private void restartAimActivity(){
+        Intent intent = getIntent();
+        finish();
+        startActivity(intent);
+    }
 
+
+    public void turnOnBluetooth(View view) {
+        if(!bluetoothAdapter.isEnabled()){
+            bluetoothAdapter.enable();
+        }
+        restartAimActivity();
+    }
 }
