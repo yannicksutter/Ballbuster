@@ -42,7 +42,9 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
             requestBltPermission();
 
         }
-        startDiscovery();
+
+        startMainActivity();
+       // startDiscovery();
 
     }
 

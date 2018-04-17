@@ -37,7 +37,7 @@ public class TheBallControllerThread extends HandlerThread {
 
         proxy = SpheroRobotFactory.getActualRobotProxy();
 
-        proxy.setBackLedBrightness(1);
+//        proxy.setBackLedBrightness(1);
     }
 
     @Override
@@ -59,7 +59,6 @@ public class TheBallControllerThread extends HandlerThread {
                     proxy.setLed(0,0,1);
                 } else if (msg.what == BALL_ROTATE) {
                     proxy.drive(msg.getData().getFloat(HEADING),0);
-                    Log.i("TheBall", "Calibrated with: " + heading);
                 } else if (msg.what == BALL_DISCONNECT) {
                     proxy.disconnect();
                 }

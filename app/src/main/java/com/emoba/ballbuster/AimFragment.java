@@ -83,7 +83,7 @@ public class AimFragment extends Fragment implements View.OnTouchListener{
 
         aimView = new AimView(getActivity());
         layout.addView(aimView);
-
+        aimView.setOnTouchListener(this);
 
         return view;
     }
