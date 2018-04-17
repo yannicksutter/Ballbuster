@@ -23,6 +23,8 @@ public class TheBallControllerThread extends HandlerThread {
     public static final int BALL_CALIBRATE = 2;
     public static final String HEADING = "heading";
     public static final String VELOCITY = "velocity";
+    public static final int BALL_ROTATE = 3;
+    public static final int BALL_DISCONNECT = 4;
 
     private final SpheroRobotProxy proxy;
     private Handler ballHandler;
@@ -35,12 +37,14 @@ public class TheBallControllerThread extends HandlerThread {
 
         proxy = SpheroRobotFactory.getActualRobotProxy();
 
-
+        proxy.setBackLedBrightness(1);
     }
 
     @Override
     protected void onLooperPrepared() {
         super.onLooperPrepared();
+
+
 
         ballHandler = new Handler(getLooper()) {
             @Override
@@ -50,13 +54,15 @@ public class TheBallControllerThread extends HandlerThread {
                     velocity = msg.getData().getFloat(VELOCITY);
 
                 } else if (msg.what == BALL_CALIBRATE) {
-                    proxy.drive(msg.getData().getFloat(HEADING),0);
-
                     proxy.setZeroHeading();
                     proxy.setLed(0,1,0);
                     proxy.setLed(0,0,1);
-                    Log.i("TheBall", "Calibrated with: " + heading);
+                } else if (msg.what == BALL_ROTATE) {
+                    proxy.drive(msg.getData().getFloat(HEADING),0);
+                } else if (msg.what == BALL_DISCONNECT) {
+                    proxy.disconnect();
                 }
+
             }
         };
 

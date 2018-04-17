@@ -19,6 +19,8 @@ public class Control {
     private int x = 0;
     private int y = 0;
 
+    public Point center = new Point();
+
     public Control(Context context){
         this.context = context;
         paint = new Paint();
@@ -39,8 +41,8 @@ public class Control {
         MARGIN_GRID = (height - (2 * RADIUS_GRID)) / 3;
         RADIUS_TOUCH = size / 20;
 
-        x = (int) width / 2;
-        y = (int) RADIUS_GRID + MARGIN_GRID;
+        x = center.x = (int) width / 2;
+        y = center.y = (int) RADIUS_GRID + MARGIN_GRID;
     }
 
     protected void drawPosition(Canvas canvas, Point nextPosition){
@@ -103,15 +105,20 @@ public class Control {
     }
 
     public float getDistanceFromMiddleLine() {
-        float distCenter = Math.abs(((float)y - (float)lastPosition.y) / (float)RADIUS_GRID);
+        float yDistCenter = Math.abs(((float)y - (float)lastPosition.y) / (float)RADIUS_GRID);
+        float xDistCenter = Math.abs(((float)x - (float)lastPosition.x) / (float)RADIUS_GRID);
 
-        if (distCenter > 1.0) {
+        float breakfactor = 0.6f;
+
+        float dist = (float) Math.sqrt((xDistCenter * xDistCenter) + (yDistCenter * yDistCenter)) * breakfactor;
+
+        if (dist > 1.0) {
             return 1.0f;
-        } else if (distCenter < 0.0) {
+        } else if (dist < 0.0) {
             return 0.0f;
         }
 
-        return distCenter;
+        return dist;
     }
 
     private double angle(double cx, double cy, double x, double y) {
@@ -126,27 +133,7 @@ public class Control {
     }
 
 
-    public int getX() {
-        return x;
-    }
-
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
     public int getRADIUS_GRID() {
         return RADIUS_GRID;
-    }
-
-    public int getMARGIN_GRID() {
-        return MARGIN_GRID;
     }
 }

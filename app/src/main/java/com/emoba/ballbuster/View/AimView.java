@@ -14,13 +14,10 @@ public class AimView extends View {
 
     private Control controller;
 
-    private static final int RADIUS = 250;
     Point newPosition = null;
     Paint paint;
     int x;
-    int y;
 
-    Point center;
     public AimView(Context context) {
         super(context);
         paint = new Paint();
@@ -44,29 +41,6 @@ public class AimView extends View {
 
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        super.onTouchEvent(event);
-
-        x = (int) event.getX();
-        y = (int) event.getY();
-        double angle = angle(controller.getX(), controller.getY(), x, y);
-        switch (event.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                newPosition = pointOnCircle(controller.getX(), controller.getY(), controller.getRADIUS_GRID(), angle);
-                break;
-            case MotionEvent.ACTION_MOVE:
-                Point point = pointOnCircle(controller.getX(), controller.getY(), controller.getRADIUS_GRID(), angle);
-                newPosition.set(point.x, point.y);
-                break;
-            default:
-        }
-
-        postInvalidate();
-
-        return true;
-    }
-
     private double angle(double cx, double cy, double x, double y) {
         double deltaX = x - cx;
         double deltaY = y - cy;
@@ -83,11 +57,14 @@ public class AimView extends View {
                          (int) (cY - (radius * Math.cos(Math.toRadians(angle)))));
     }
 
+    public void setNewPosition(int x, int y) {
+        double angle = angle(controller.center.x, controller.center.y, x, y);
+        newPosition = pointOnCircle(controller.center.x, controller.center.y, controller.getRADIUS_GRID(), angle);
 
-    public float getAngleOfPointOnCircle() {
-        return (float) (180-angle(controller.getX(), controller.getY(), x, y));
+        postInvalidate();
     }
 
-
-
+    public Control getController() {
+        return controller;
+    }
 }

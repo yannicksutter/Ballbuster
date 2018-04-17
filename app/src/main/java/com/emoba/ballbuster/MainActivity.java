@@ -2,6 +2,7 @@ package com.emoba.ballbuster;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
@@ -36,10 +37,21 @@ public class MainActivity extends AppCompatActivity implements
                 case R.id.navigation_sensor:
                     openSensorView();
                     return true;
+                case R.id.ballKiller:
+                    closeApplicationAndDisconnect();
+                    return true;
             }
             return false;
         }
     };
+
+    private void closeApplicationAndDisconnect() {
+        Message msg = ballControllerThread.getBallThreadHandler().obtainMessage();
+        msg.what = TheBallControllerThread.BALL_DISCONNECT;
+        msg.sendToTarget();
+
+        finish();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

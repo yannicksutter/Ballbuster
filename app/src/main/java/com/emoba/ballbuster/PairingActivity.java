@@ -48,6 +48,7 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
             requestBltPermission();
 
         }
+
         if(bluetoothAdapter.isEnabled()){
             Button btn = findViewById(R.id.button);
             btn.setVisibility(View.GONE);

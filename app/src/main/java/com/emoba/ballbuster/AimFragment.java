@@ -7,12 +7,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.emoba.ballbuster.View.AimView;
+import com.emoba.ballbuster.View.Control;
 
 
 /**
@@ -23,7 +25,7 @@ import com.emoba.ballbuster.View.AimView;
  * Use the {@link AimFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AimFragment extends Fragment {
+public class AimFragment extends Fragment implements View.OnTouchListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -81,7 +83,7 @@ public class AimFragment extends Fragment {
 
         aimView = new AimView(getActivity());
         layout.addView(aimView);
-
+        aimView.setOnTouchListener(this);
 
         return view;
     }
@@ -101,6 +103,36 @@ public class AimFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent event) {
+        aimView.setNewPosition((int)event.getX(), (int)event.getY());
+
+        sendToBall();
+        return true;
+    }
+
+    private void sendToBall() {
+        float headingvalue = 0;
+
+        MainActivity activity = (MainActivity) getActivity();
+        Handler ballHandler = activity.getBallHandler();
+
+        Message msg= ballHandler.obtainMessage();
+        msg.what = TheBallControllerThread.BALL_ROTATE;
+        Bundle content = new Bundle();
+
+        Control controller = this.aimView.getController();
+        if (controller != null) {
+            headingvalue = controller.getAngleOfPointOnCircle();
+        }
+
+        content.putFloat(TheBallControllerThread.HEADING, headingvalue);
+        content.putFloat(TheBallControllerThread.VELOCITY, 0);
+
+        msg.setData(content);
+        msg.sendToTarget();
     }
 
     /**
@@ -130,11 +162,6 @@ public class AimFragment extends Fragment {
         msg.what = TheBallControllerThread.BALL_CALIBRATE;
 
         Bundle content = new Bundle();
-
-        float headingvalue = aimView.getAngleOfPointOnCircle();
-
-        content.putFloat(TheBallControllerThread.HEADING, headingvalue);
-        content.putFloat(TheBallControllerThread.VELOCITY, 0);
 
         msg.setData(content);
 

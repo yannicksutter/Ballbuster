@@ -92,11 +92,18 @@ public class TouchFragment extends Fragment implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        touchView.setNewPosition((int)event.getX(), (int)event.getY());
+
+        if (event.getAction() == android.view.MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_MOVE) {
+            touchView.setNewPosition((int)event.getX(), (int)event.getY());
+        } else if (event.getAction() == android.view.MotionEvent.ACTION_UP) {
+            touchView.setNewPosition(touchView.getController().center.x, touchView.getController().center.y);
+        }
 
         sendToBall();
         return true;
     }
+
+
 
 
     private void sendToBall() {
