@@ -37,14 +37,14 @@ public class TheBallControllerThread extends HandlerThread {
 
         proxy = SpheroRobotFactory.getActualRobotProxy();
 
-
+        proxy.setBackLedBrightness(1);
     }
 
     @Override
     protected void onLooperPrepared() {
         super.onLooperPrepared();
 
-        proxy.setBackLedBrightness(1);
+
 
         ballHandler = new Handler(getLooper()) {
             @Override

@@ -14,13 +14,9 @@ public class AimView extends View {
 
     private Control controller;
 
-    private static final int RADIUS = 250;
     Point newPosition = null;
     Paint paint;
     int x;
-    int y;
-
-    Point center;
 
     public AimView(Context context) {
         super(context);
@@ -61,17 +57,9 @@ public class AimView extends View {
                          (int) (cY - (radius * Math.cos(Math.toRadians(angle)))));
     }
 
-
-    public float getAngleOfPointOnCircle() {
-        return (float) (180-angle(controller.getX(), controller.getY(), x, y));
-    }
-
     public void setNewPosition(int x, int y) {
-
-        this.x = x;
-        this.y = y;
-        double angle = angle(controller.getX(), controller.getY(), x, y);
-        newPosition = pointOnCircle(controller.getX(), controller.getY(), controller.getRADIUS_GRID(), angle);
+        double angle = angle(controller.center.x, controller.center.y, x, y);
+        newPosition = pointOnCircle(controller.center.x, controller.center.y, controller.getRADIUS_GRID(), angle);
 
         postInvalidate();
     }

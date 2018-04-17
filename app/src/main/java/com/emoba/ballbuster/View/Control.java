@@ -19,6 +19,8 @@ public class Control {
     private int x = 0;
     private int y = 0;
 
+    public Point center = new Point();
+
     public Control(Context context){
         this.context = context;
         paint = new Paint();
@@ -39,8 +41,8 @@ public class Control {
         MARGIN_GRID = (height - (2 * RADIUS_GRID)) / 3;
         RADIUS_TOUCH = size / 20;
 
-        x = (int) width / 2;
-        y = (int) RADIUS_GRID + MARGIN_GRID;
+        x = center.x = (int) width / 2;
+        y = center.y = (int) RADIUS_GRID + MARGIN_GRID;
     }
 
     protected void drawPosition(Canvas canvas, Point nextPosition){
@@ -131,18 +133,7 @@ public class Control {
     }
 
 
-    public int getX() {
-        return x;
-    }
-
-
-    public int getY() {
-        return y;
-    }
-
-
     public int getRADIUS_GRID() {
         return RADIUS_GRID;
     }
-
 }
