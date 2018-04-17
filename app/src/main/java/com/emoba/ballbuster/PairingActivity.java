@@ -43,8 +43,7 @@ public class PairingActivity extends AppCompatActivity implements SpheroRobotDis
 
         }
 
-        startMainActivity();
-       // startDiscovery();
+        startDiscovery();
 
     }
 

@@ -37,7 +37,7 @@ public class TheBallControllerThread extends HandlerThread {
 
         proxy = SpheroRobotFactory.getActualRobotProxy();
 
-//        proxy.setBackLedBrightness(1);
+        proxy.setBackLedBrightness(1);
     }
 
     @Override
